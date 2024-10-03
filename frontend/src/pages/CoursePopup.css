@@ -1,0 +1,63 @@
+.course-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 20px;
+    z-index: 1000;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px; /* Rounded corners */
+}
+
+.course-popup h2 {
+    margin-bottom: 20px;
+}
+
+.course-popup ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.course-popup li {
+    margin: 10px 0;
+}
+
+.course-popup input {
+    margin-right: 10px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px; /* Rounded corners for inputs */
+}
+
+.action-btn {
+    background-color: #134277; /* Button color */
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left:10px;
+
+}
+
+.action-btn:hover {
+    background-color: #0f3b6d; /* Darker shade on hover */
+}
+
+.close-btn {
+    margin-top: 20px;
+    background-color: #dc3545; /* Bootstrap danger color */
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.close-btn:hover {
+    background-color: #c82333; /* Darker red on hover */
+}

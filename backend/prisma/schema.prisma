@@ -1,0 +1,62 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  name         String
+  email        String        @unique
+  password     String
+  role         String // employee or admin
+  enrollments  Enrollment[]
+  certificates Certificate[]
+}
+
+model Course {
+  id            Int            @id @default(autoincrement())
+  title         String
+  description   String
+  duration      Int // in hours
+  difficulty    String
+  enrollments   Enrollment[]
+  certificates  Certificate[]
+  learningPaths LearningPath[] @relation("LearningPathCourses") // Add this line for relation
+}
+
+model LearningPath {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  courses     Course[] @relation("LearningPathCourses") // Corrected line, removed fields and references
+}
+npm start
+model Enrollment {
+  id                 Int       @id @default(autoincrement())
+  userId             Int
+  courseId           Int
+  enrollmentDate     DateTime  @default(now())
+  completionPercentage Int     @default(0) // Percentage from 0 to 100
+  completionDate     DateTime?
+
+  user   User   @relation(fields: [userId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
+}
+
+
+model Certificate {
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  courseId       Int
+  certificateUrl String
+  issuedAt       DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
+}
