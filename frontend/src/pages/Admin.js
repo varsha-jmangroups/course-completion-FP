@@ -3,44 +3,83 @@ import { Table, Button, Form, Modal, Alert, Navbar, Nav } from 'react-bootstrap'
 import CoursePopup from './CoursePopup';
 import axios from 'axios';
 import './AdminDashboard.css';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom'; 
+import LearningPath from './LearningPath';
 
 function AdminDashboard() {
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
   const [employees, setEmployees] = useState([]);
   const [courses, setCourses] = useState([]);
+  const [learningPaths, setLearningPaths] = useState([]);
   const [popupVisible, setPopupVisible] = useState(false);
+  const [showLearningPathModal, setShowLearningPathModal] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [newEmployee, setNewEmployee] = useState({ name: '', email: '', password: '', role: '' });
   const [newCourse, setNewCourse] = useState({ title: '', description: '', duration: '', difficulty: '' });
   const [error, setError] = useState('');
   const [showAddEmployeeModal, setShowAddEmployeeModal] = useState(false);
   const [showAddCourseModal, setShowAddCourseModal] = useState(false);
+  const [selectedLearningPath, setSelectedLearningPath] = useState(null);
 
-  // Fetch users and courses from the database
   useEffect(() => {
-    const fetchUsersAndCourses = async () => {
+    const fetchUsersCoursesAndPaths = async () => {
       try {
-        const [usersResponse, coursesResponse] = await Promise.all([
+        const [usersResponse, coursesResponse, pathsResponse] = await Promise.all([
           axios.get('http://localhost:3000/users'),
           axios.get('http://localhost:3000/courses'),
+          axios.get('http://localhost:3000/learning-paths'),
         ]);
         setEmployees(usersResponse.data);
         setCourses(coursesResponse.data);
+        setLearningPaths(pathsResponse.data);
       } catch (error) {
-        console.error('Error fetching users or courses:', error);
+        console.error('Error fetching data:', error);
       }
     };
 
-    fetchUsersAndCourses();
+    fetchUsersCoursesAndPaths();
   }, []);
 
+  const handleLearningPathClick = (learningPath) => {
+    setSelectedLearningPath(learningPath);
+    setShowLearningPathModal(true);
+  };
+
+  const handleCloseLearningPathModal = () => {
+    setShowLearningPathModal(false);
+    setSelectedLearningPath(null);
+  };
+
   const deleteUser = async (id) => {
-    try {
-      await axios.delete(`http://localhost:3000/users/${id}`);
-      setEmployees(employees.filter(employee => employee.id !== id));
-    } catch (error) {
-      console.error('Error deleting user:', error);
+    if (window.confirm('Are you sure you want to delete this employee?')) {
+      try {
+        await axios.delete(`http://localhost:3000/users/${id}`);
+        setEmployees(employees.filter(employee => employee.id !== id));
+      } catch (error) {
+        console.error('Error deleting user:', error);
+      }
+    }
+  };
+
+  const deleteCourse = async (id) => {
+    if (window.confirm('Are you sure you want to delete this course?')) {
+      try {
+        await axios.delete(`http://localhost:3000/courses/${id}`);
+        setCourses(courses.filter(course => course.id !== id));
+      } catch (error) {
+        console.error('Error deleting course:', error);
+      }
+    }
+  };
+
+  const deleteLearningPath = async (id) => {
+    if (window.confirm('Are you sure you want to delete this learning path?')) {
+      try {
+        await axios.delete(`http://localhost:3000/learning-paths/${id}`);
+        setLearningPaths(learningPaths.filter(path => path.id !== id));
+      } catch (error) {
+        console.error('Error deleting learning path:', error);
+      }
     }
   };
 
@@ -49,14 +88,15 @@ function AdminDashboard() {
     setPopupVisible(true);
   };
 
-  const updateCourses = async (employeeId, updatedCourses) => {
-    try {
-      await axios.put(`/api/employees/${employeeId}/courses`, { courses: updatedCourses });
-      setEmployees(employees.map(employee => 
-        employee.id === employeeId ? { ...employee, courses: updatedCourses } : employee
-      ));
-    } catch (error) {
-      console.error('Error updating courses:', error);
+  const handleAddCourseToLearningPath = async (courseId) => {
+    if (selectedLearningPath) {
+      try {
+        await axios.post(`http://localhost:3000/learning-paths/${selectedLearningPath.id}/courses`, { courseId });
+        const response = await axios.get('http://localhost:3000/learning-paths');
+        setLearningPaths(response.data);
+      } catch (error) {
+        console.error('Error adding course to learning path:', error);
+      }
     }
   };
 
@@ -69,26 +109,36 @@ function AdminDashboard() {
     try {
       const response = await axios.post('http://localhost:3000/register', newEmployee);
       setEmployees([...employees, response.data]);
-      resetNewEmployee(); // Reset the form after adding employee
+      resetNewEmployee();
       setError('');
-      setShowAddEmployeeModal(false); // Close modal after adding employee
+      setShowAddEmployeeModal(false);
     } catch (error) {
       console.error('Error adding employee:', error);
       setError('Failed to add employee');
     }
   };
 
+  const updateCourses = async () => {
+    if (selectedEmployee) {
+      try {
+        const response = await axios.get(`http://localhost:3000/users/${selectedEmployee.id}/courses`);
+        setCourses(response.data);
+      } catch (error) {
+        console.error('Error updating courses:', error);
+      }
+    }
+  };
+
   const resetNewEmployee = () => {
-    setNewEmployee({ name: '', email: '', password: '', role: '' }); // Reset to empty fields
+    setNewEmployee({ name: '', email: '', password: '', role: '' });
   };
 
   const handleSignOut = () => {
-    // Here you can add any sign-out logic (e.g., clearing tokens)
-    navigate('/'); // Redirect to the homepage
+    navigate('/');
   };
 
   const handleOpenAddEmployeeModal = () => {
-    resetNewEmployee(); // Reset form when opening modal
+    resetNewEmployee();
     setShowAddEmployeeModal(true);
   };
 
@@ -97,14 +147,13 @@ function AdminDashboard() {
       setError('All fields are required');
       return;
     }
-    console.log("Course Adding")
 
     try {
       const response = await axios.post('http://localhost:3000/courses', newCourse);
       setCourses([...courses, response.data]);
-      resetNewCourse(); // Reset the form after adding course
+      resetNewCourse();
       setError('');
-      setShowAddCourseModal(false); // Close modal after adding course
+      setShowAddCourseModal(false);
     } catch (error) {
       console.error('Error adding course:', error);
       setError('Failed to add course');
@@ -112,16 +161,7 @@ function AdminDashboard() {
   };
 
   const resetNewCourse = () => {
-    setNewCourse({ title: '', description: '', duration: '', difficulty: '' }); // Reset to empty fields
-  };
-
-  const deleteCourse = async (id) => {
-    try {
-      await axios.delete(`http://localhost:3000/courses/${id}`);
-      setCourses(courses.filter(course => course.id !== id));
-    } catch (error) {
-      console.error('Error deleting course:', error);
-    }
+    setNewCourse({ title: '', description: '', duration: '', difficulty: '' });
   };
 
   return (
@@ -142,6 +182,11 @@ function AdminDashboard() {
               setShowAddCourseModal(true);
             }}>
               Add New Course
+            </Button>
+            <Button variant="outline-light" className="mx-2" onClick={() => {
+              setShowLearningPathModal(true);
+            }}>
+              Learning Path
             </Button>
             <Button variant="outline-danger" onClick={handleSignOut}>Sign Out</Button>
           </Nav>
@@ -231,7 +276,7 @@ function AdminDashboard() {
               <Form.Label>Duration</Form.Label>
               <Form.Control 
                 type="text" 
-                placeholder="Enter course duration" 
+                placeholder="Enter duration" 
                 value={newCourse.duration} 
                 onChange={(e) => setNewCourse({ ...newCourse, duration: e.target.value })} 
               />
@@ -254,70 +299,109 @@ function AdminDashboard() {
         </Modal.Body>
       </Modal>
 
-      <section>
-        <h2>User Management</h2>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Courses</th>
-              <th>Actions</th>
+      {/* Employees Table */}
+      <h2>Employees</h2>
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {employees.map(employee => (
+            <tr key={employee.id}>
+              <td>{employee.id}</td>
+              <td>{employee.name}</td>
+              <td>{employee.email}</td>
+              <td>{employee.role}</td>
+              <td>
+                <Button variant="info" onClick={() => handleViewCourses(employee)}>View Courses</Button>
+                <Button variant="danger" onClick={() => deleteUser(employee.id)}>Delete</Button>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {employees.map(employee => (
-              <tr key={employee.id}>
-                <td>{employee.name}</td>
-                <td>{employee.email}</td>
-                <td>{employee.role}</td>
-                <td>{employee.courses ? employee.courses.join(', ') : 'No courses'}</td>
-                <td>
-                  <Button variant="danger" onClick={() => deleteUser(employee.id)}>Delete</Button>
-                  <Button variant="info" onClick={() => handleViewCourses(employee)}>View Courses</Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+          ))}
+        </tbody>
+      </Table>
 
-        <h2>Course Management</h2>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Description</th>
-              <th>Duration</th>
-              <th>Difficulty</th>
-              <th>Actions</th>
+      {/* Courses Table */}
+      <h2>Courses</h2>
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Duration (Hrs)</th>
+            <th>Difficulty</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {courses.map(course => (
+            <tr key={course.id}>
+              <td>{course.id}</td>
+              <td>{course.title}</td>
+              <td>{course.description}</td>
+              <td>{course.duration}</td>
+              <td>{course.difficulty}</td>
+              <td>
+                <Button variant="danger" onClick={() => deleteCourse(course.id)}>Delete</Button>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {courses.map(course => (
-              <tr key={course.id}>
-                <td>{course.title}</td>
-                <td>{course.description}</td>
-                <td>{course.duration}</td>
-                <td>{course.difficulty}</td>
-                <td>
-                  <Button variant="danger" onClick={() => deleteCourse(course.id)}>Delete</Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      </section>
+          ))}
+        </tbody>
+      </Table>
 
-      {/* Popup for courses */}
+      {/* Learning Paths Table */}
+      <h2>Learning Paths</h2>
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Courses</th>
+          </tr>
+        </thead>
+        <tbody>
+          {learningPaths.map(path => (
+            <tr key={path.id}>
+              <td>{path.id}</td>
+              <td>{path.title}</td>
+              <td>{path.description}</td>
+              <td>
+                {path.courses && path.courses.map(course => (
+                  <div key={course.id}>{course.title}</div>
+                ))}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+
+      {/* Course Popup */}
       {popupVisible && selectedEmployee && (
-        <CoursePopup 
-          employee={selectedEmployee} 
-          courses={courses} 
-          onClose={() => setPopupVisible(false)} 
-          onUpdate={updateCourses} 
+        <CoursePopup
+          employee={selectedEmployee}
+          onClose={() => setPopupVisible(false)}
+          onUpdateCourses={updateCourses}
+          courses={courses}
         />
       )}
+
+      {/* Learning Path Modal */}
+      <LearningPath 
+        show={showLearningPathModal} 
+        handleClose={handleCloseLearningPathModal} 
+        selectedLearningPath={selectedLearningPath}
+        onSave={(newPath) => {
+          setLearningPaths([...learningPaths, newPath]);
+        }}
+      />
     </div>
   );
 }

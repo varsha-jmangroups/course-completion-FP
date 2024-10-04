@@ -59,32 +59,21 @@ button {
 .view-courses-btn:hover {
     background-color: #0056b3; /* Darker blue on hover */
 }
-.admin-dashboard {
-    padding: 20px;
-  }
-  
-  .admin-header {
-    text-align: center;
-  }
-  
-  .employee-management, .add-employee {
-    margin-top: 20px;
-  }
 
-  .title {
+.title {
     color: white;
     font-size: 1.5rem;
-  }
+}
 
-  .table {
+.table {
     margin-top: 20px;
-  }
-  
-  .modal-header {
+}
+
+.modal-header {
     background-color: #007bff;
     color: white;
-  }
-  
-  .modal-footer {
+}
+
+.modal-footer {
     border-top: none;
-  }
+}

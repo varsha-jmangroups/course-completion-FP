@@ -142,21 +142,73 @@ app.post('/learning-paths', async (req, res) => {
 
   try {
     const newPath = await prisma.learningPath.create({
-      data: { title, description, course_ids: courseIds },
+      data: {
+        title,
+        description,
+        courses: {
+          connect: courseIds.map(id => ({ id:Number(id) })),
+        },
+      },
     });
     res.status(201).json(newPath);
   } catch (error) {
+    console.error("Error creating learning path:", error); // Log the error
     res.status(500).json({ error: 'Failed to create learning path' });
   }
 });
 
+
 // 8. Get Learning Paths
 app.get('/learning-paths', async (req, res) => {
   try {
-    const paths = await prisma.learningPath.findMany();
+    const paths = await prisma.learningPath.findMany({
+      include: {
+        courses: true, // This includes the related courses for each learning path
+      },
+    });
     res.json(paths);
   } catch (error) {
+    console.error(error); // Log the error for better debugging
     res.status(500).json({ error: 'Failed to retrieve learning paths' });
+  }
+});
+
+
+// 9. Update Learning Path (Admin Only)
+app.put('/learning-paths/:id', async (req, res) => {
+  const { id } = req.params;
+  const { title, description, courseIds } = req.body;
+
+  try {
+    const updatedPath = await prisma.learningPath.update({
+      where: { id: parseInt(id) },
+      data: {
+        title,
+        description,
+        courses: {
+          set: courseIds.map(id => ({ id })), // Replace existing courses
+        },
+      },
+    });
+
+    res.json(updatedPath);
+  } catch (error) {
+    console.error("Error updating learning path:", error);
+    res.status(500).json({ error: 'Failed to update learning path' });
+  }
+})
+
+app.delete('/learning-paths/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedPath = await prisma.learningPath.delete({
+      where: { id: parseInt(id) },
+    });
+
+    res.json({ message: 'Learning path deleted successfully', deletedPath });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete learning path' });
   }
 });
 
