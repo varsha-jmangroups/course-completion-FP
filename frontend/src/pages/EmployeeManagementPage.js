@@ -14,7 +14,7 @@ import LearningPathTable from '../components/LearningPathTable';
 import EmployeeCourseGraph from '../components/EmployeeCourseGraph';
 import NavigationBar from '../components/NavigationBar';
 
-function AdminDashboard() {
+function EmployeeManagementPage() {
   const navigate = useNavigate();
   const [employees, setEmployees] = useState([]);
   const [courses, setCourses] = useState([]);
@@ -174,12 +174,12 @@ const handleSignOut = () => {
 
   return (
     <div className="admin-dashboard">
-<Navbar bg="dark" variant="dark" expand="lg" fixed="top" className="mb-4"> {/* Add fixed="top" here */}
-            <Navbar.Brand href="#home">Company Name</Navbar.Brand>
+<Navbar bg="primary" variant="dark" expand="lg" fixed="top" className="mb-4"> {/* Add fixed="top" here */}
+            <Navbar.Brand href="#home">TrainingTracker</Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="mx-auto">
-                    <Navbar.Text className="title">Admin Dashboard</Navbar.Text>
+                    <Navbar.Text className="title">List of Employees</Navbar.Text>
                 </Nav>
                 <Nav>
                     <Button variant="outline-light" className="mx-2" onClick={handleOpenAddEmployeeModal}>
@@ -196,7 +196,7 @@ const handleSignOut = () => {
                     }}>
                         Learning Path
                     </Button> */}
-                    <Button variant="outline-danger" onClick={handleSignOut}>Sign Out</Button>
+                    <Button variant="outline-danger" onClick={handleSignOut} className="me-2">Sign Out</Button>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>      
@@ -282,4 +282,4 @@ const handleSignOut = () => {
   );
 }
 
-export default AdminDashboard;
+export default EmployeeManagementPage;

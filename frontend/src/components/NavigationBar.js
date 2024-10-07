@@ -15,7 +15,7 @@ export default function NavigationBar({resetNewCourse, setShowAddCourseModal, re
     };
 
     return (
-        <Navbar bg="dark" variant="dark" expand="lg" fixed="top" className="mb-4"> {/* Add fixed="top" here */}
+        <Navbar bg="primary" variant="dark" expand="lg" fixed="top" className="mb-4"> {/* Add fixed="top" here */}
             <Navbar.Brand href="#home">Company Name</Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">

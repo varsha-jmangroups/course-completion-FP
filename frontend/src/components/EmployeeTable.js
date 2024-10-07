@@ -13,7 +13,7 @@ export default function EmployeeTable({ employees, handleViewCourses, deleteUser
         Header: 'Actions',
         Cell: ({ row }) => (
           <div>
-            <Button variant="info" onClick={() => handleViewCourses(row.original)}>View Courses</Button>
+            <Button variant="warning" onClick={() => handleViewCourses(row.original)} className="me-2">View Courses</Button>
             <Button variant="danger" onClick={() => deleteUser(row.original.id)}>Delete</Button>
           </div>
         ),

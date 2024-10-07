@@ -15,7 +15,10 @@ import EmployeeCourseGraph from '../components/EmployeeCourseGraph';
 import NavigationBar from '../components/NavigationBar';
 
 import EmployeePerformanceMetricsGraph from '../components/EmployeePerformanceMetricsGraph';
-
+import CourseCompletionRateGraph from '../components/CourseCompletionRateGraph'; // Import your new component
+import EmployeeEnrollmentOverviewGraph from '../components/EmployeeEnrollmentOverviewGraph'; // Import your new component
+import EnrollmentStatisticsGraph from '../components/EnrollmentStatisticsGraph'; // Import your new component
+import LearningPathOverviewGraph from '../components/LearningPathOverviewGraph'; 
 function AdminDashboard() {
   const navigate = useNavigate();
   const [employees, setEmployees] = useState([]);
@@ -30,18 +33,21 @@ function AdminDashboard() {
   const [showAddEmployeeModal, setShowAddEmployeeModal] = useState(false);
   const [showAddCourseModal, setShowAddCourseModal] = useState(false);
   const [selectedLearningPath, setSelectedLearningPath] = useState(null);
+  const [enrollments, setEnrollments] = useState([]);
 
   useEffect(() => {
     const fetchUsersCoursesAndPaths = async () => {
       try {
-        const [usersResponse, coursesResponse, pathsResponse] = await Promise.all([
+        const [usersResponse, coursesResponse, pathsResponse, enrollmentsResponse] = await Promise.all([
           axios.get('http://localhost:3000/users'),
           axios.get('http://localhost:3000/courses'),
           axios.get('http://localhost:3000/learning-paths'),
+          axios.get('http://localhost:3000/enrollments'),
         ]);
         setEmployees(usersResponse.data);
         setCourses(coursesResponse.data);
         setLearningPaths(pathsResponse.data);
+        setEnrollments(enrollmentsResponse.data);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -181,8 +187,13 @@ function AdminDashboard() {
             />
           </Col>
           <Col xs={10}>
-            {/* Employee and Course Graph */}
+          
             <EmployeeCourseGraph employees={employees} courses={courses} />
+            <EmployeePerformanceMetricsGraph employees={employees} enrollments={enrollments} />
+            <CourseCompletionRateGraph courses={courses} enrollments={enrollments} /> {/* Add Course Completion Rate Graph */}
+            <EmployeeEnrollmentOverviewGraph employees={employees} enrollments={enrollments} /> {/* Add Employee Enrollment Overview Graph */}
+            <EnrollmentStatisticsGraph courses={courses} enrollments={enrollments} /> {/* Add Enrollment Statistics Graph */}
+            <LearningPathOverviewGraph learningPaths={learningPaths} /> {/* Add Learning Path Overview Graph */}
 
             {/* New Employee Modal */}
             <AddNewEmployeeModal 
