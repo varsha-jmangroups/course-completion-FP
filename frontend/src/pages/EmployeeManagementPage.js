@@ -200,7 +200,7 @@ const handleSignOut = () => {
                 </Nav>
             </Navbar.Collapse>
         </Navbar>      
-        <Container fluid>
+        <Container fluid style={{marginTop: '60px'}}>
         <Row>
           <Col xs={2}>
             {/* Sidebar Component */}

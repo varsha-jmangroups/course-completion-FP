@@ -14,6 +14,8 @@ import LearningPathTable from '../components/LearningPathTable';
 import EmployeeCourseGraph from '../components/EmployeeCourseGraph';
 import NavigationBar from '../components/NavigationBar';
 
+import EmployeePerformanceMetricsGraph from '../components/EmployeePerformanceMetricsGraph';
+
 function AdminDashboard() {
   const navigate = useNavigate();
   const [employees, setEmployees] = useState([]);
@@ -166,7 +168,7 @@ function AdminDashboard() {
   return (
     <div className="admin-dashboard">
       <NavigationBar resetNewCourse={resetNewCourse} setShowAddCourseModal={setShowAddCourseModal} resetNewEmployee={resetNewEmployee} setShowAddEmployeeModal={setShowAddEmployeeModal} setShowLearningPathModal={setShowLearningPathModal} />
-      <Container fluid>
+      <Container fluid style={{marginTop: '60px'}}>
         <Row>
           <Col xs={2}>
             {/* Sidebar Component */}
@@ -204,7 +206,7 @@ function AdminDashboard() {
             />
 
             {/* Employees Table */}
-            <h2>Employees</h2>
+            {/* <h2>Employees</h2> */}
             {/* <EmployeeTable 
               employees={employees} 
               handleViewCourses={handleViewCourses} 
