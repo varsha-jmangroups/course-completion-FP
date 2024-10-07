@@ -121,6 +121,24 @@ app.post('/enroll', async (req, res) => {
   }
 });
 
+// 10. Delete a Course (Admin Only)
+app.delete('/courses/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Delete the course by id
+    const deletedCourse = await prisma.course.delete({
+      where: { id: parseInt(id) },
+    });
+
+    res.json({ message: 'Course deleted successfully', deletedCourse });
+  } catch (error) {
+    console.error('Error deleting course:', error);
+    res.status(500).json({ error: 'Failed to delete course' });
+  }
+});
+
+
 // 6. Get User Progress (Enrollments)
 app.get('/user/:userId/progress', async (req, res) => {
   const { userId } = req.params;

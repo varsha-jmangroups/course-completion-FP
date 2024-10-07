@@ -1,6 +1,7 @@
+//pages/CoursePopup.js
 import React, { useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
-import './CoursePopup.css';
+import '../styles/CoursePopup.css';
 
 function CoursePopup({ employee, courses, onClose, onUpdate }) {
   const [selectedCourse, setSelectedCourse] = useState('');

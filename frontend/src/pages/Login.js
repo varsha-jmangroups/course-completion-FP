@@ -1,8 +1,9 @@
+//components/Login.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import './HomePage.css';
+import '../styles/LoginPage.css';
 
-function HomePage() {
+function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate(); // Initialize useNavigate
@@ -26,7 +27,7 @@ function HomePage() {
         localStorage.setItem('user', JSON.stringify(data)); // Save the entire user object
         
         // Redirect based on user role
-        if (data.role === 'admin') {
+        if (data.role === 'admin'||data.role === 'Admin') {
           navigate('/admin'); // Redirect to admin dashboard
         } else {
           navigate('/dashboard'); // Redirect to employee dashboard
@@ -73,4 +74,4 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default Login;

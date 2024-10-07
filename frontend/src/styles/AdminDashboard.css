@@ -1,0 +1,93 @@
+.admin-dashboard {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    color: #343a40;
+    margin: 20px 0;
+}
+
+.toast-message {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+/* Sidebar styles */
+.sidebar {
+    background-color: #134277;
+    padding: 20px;
+    color: white;
+}
+
+/* Main content styling */
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+
+/* General styling for headers */
+h2 {
+    font-size: 1.5rem;
+    color: #134277;
+    margin-bottom: 20px;
+}
+
+/* Employee and Course Graph */
+.employee-course-graph {
+    margin-bottom: 20px;
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Button styles */
+button {
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 8px;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+.view-courses-btn {
+    background-color: #007bff;
+}
+
+.view-courses-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Style adjustments for modal */
+.modal-title {
+    font-weight: bold;
+    color: #343a40;
+}

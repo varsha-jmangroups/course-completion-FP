@@ -1,0 +1,28 @@
+.pagination-controls {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pagination-button {
+    margin-right: 5px;
+}
+
+.pagination-button.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.pagination-button:disabled {
+    background-color: #d3d3d3;
+    color: #7d7d7d;
+    cursor: not-allowed;
+}
+
+/* Optional: You can style the table further */
+.table th {
+    background-color: #007bff; /* Customize header color */
+    color: white;
+}

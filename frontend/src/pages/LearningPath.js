@@ -1,4 +1,4 @@
-// LearningPath.js
+// pages/LearningPath.js
 import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import axios from 'axios';

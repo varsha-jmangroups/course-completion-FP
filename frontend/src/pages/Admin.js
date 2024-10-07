@@ -1,10 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Form, Modal, Alert, Navbar, Nav } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import CoursePopup from './CoursePopup';
 import axios from 'axios';
-import './AdminDashboard.css';
+import '../styles/AdminDashboard.css';
 import { useNavigate } from 'react-router-dom'; 
 import LearningPath from './LearningPath';
+import Sidebar from '../components/Sidebar'; // Sidebar Component
+import AddNewEmployeeModal from '../components/AddNewEmployeeModal';
+import NewCourseModal from '../components/NewCourseModal';
+import EmployeeTable from '../components/EmployeeTable';
+import CourseTable from '../components/CourseTable';
+import LearningPathTable from '../components/LearningPathTable';
+import EmployeeCourseGraph from '../components/EmployeeCourseGraph';
+import NavigationBar from '../components/NavigationBar';
 
 function AdminDashboard() {
   const navigate = useNavigate();
@@ -133,15 +141,6 @@ function AdminDashboard() {
     setNewEmployee({ name: '', email: '', password: '', role: '' });
   };
 
-  const handleSignOut = () => {
-    navigate('/');
-  };
-
-  const handleOpenAddEmployeeModal = () => {
-    resetNewEmployee();
-    setShowAddEmployeeModal(true);
-  };
-
   const handleAddCourse = async () => {
     if (!newCourse.title || !newCourse.description || !newCourse.duration || !newCourse.difficulty) {
       setError('All fields are required');
@@ -166,242 +165,85 @@ function AdminDashboard() {
 
   return (
     <div className="admin-dashboard">
-      <Navbar bg="dark" variant="dark" expand="lg" className="mb-4">
-        <Navbar.Brand href="#home">Company Name</Navbar.Brand>
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="mx-auto">
-            <Navbar.Text className="title">Admin Dashboard</Navbar.Text>
-          </Nav>
-          <Nav>
-            <Button variant="outline-light" className="mx-2" onClick={handleOpenAddEmployeeModal}>
-              Add New Employee
-            </Button>
-            <Button variant="outline-light" className="mx-2" onClick={() => {
-              resetNewCourse();
-              setShowAddCourseModal(true);
-            }}>
-              Add New Course
-            </Button>
-            <Button variant="outline-light" className="mx-2" onClick={() => {
-              setShowLearningPathModal(true);
-            }}>
-              Learning Path
-            </Button>
-            <Button variant="outline-danger" onClick={handleSignOut}>Sign Out</Button>
-          </Nav>
-        </Navbar.Collapse>
-      </Navbar>
+      <NavigationBar resetNewCourse={resetNewCourse} setShowAddCourseModal={setShowAddCourseModal} resetNewEmployee={resetNewEmployee} setShowAddEmployeeModal={setShowAddEmployeeModal} setShowLearningPathModal={setShowLearningPathModal} />
+      <Container fluid>
+        <Row>
+          <Col xs={2}>
+            {/* Sidebar Component */}
+            <Sidebar 
+              resetNewCourse={resetNewCourse} 
+              setShowAddCourseModal={setShowAddCourseModal}
+              resetNewEmployee={resetNewEmployee}
+              setShowAddEmployeeModal={setShowAddEmployeeModal}
+              setShowLearningPathModal={setShowLearningPathModal}
+            />
+          </Col>
+          <Col xs={10}>
+            {/* Employee and Course Graph */}
+            <EmployeeCourseGraph employees={employees} courses={courses} />
 
-      {/* New Employee Modal */}
-      <Modal show={showAddEmployeeModal} onHide={() => setShowAddEmployeeModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Add New Employee</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {error && <Alert variant="danger">{error}</Alert>}
-          <Form>
-            <Form.Group controlId="formEmployeeName">
-              <Form.Label>Name</Form.Label>
-              <Form.Control 
-                type="text" 
-                placeholder="Enter name" 
-                value={newEmployee.name} 
-                onChange={(e) => setNewEmployee({ ...newEmployee, name: e.target.value })} 
+            {/* New Employee Modal */}
+            <AddNewEmployeeModal 
+              showAddCourseModal={showAddCourseModal} 
+              setShowAddEmployeeModal={setShowAddEmployeeModal} 
+              showAddEmployeeModal={showAddEmployeeModal} 
+              error={error} 
+              newEmployee={newEmployee} 
+              setNewEmployee={setNewEmployee} 
+              handleAddEmployee={handleAddEmployee} 
+            />
+
+            {/* New Course Modal */}
+            <NewCourseModal 
+              showAddCourseModal={showAddCourseModal}
+              setShowAddCourseModal={setShowAddCourseModal} 
+              error={error} 
+              setNewCourse={setNewCourse} 
+              newCourse={newCourse} 
+              handleAddCourse={handleAddCourse} 
+            />
+
+            {/* Employees Table */}
+            <h2>Employees</h2>
+            <EmployeeTable 
+              employees={employees} 
+              handleViewCourses={handleViewCourses} 
+              deleteUser={deleteUser} 
+            />
+
+            {/* Courses Table */}
+            <h2>Courses</h2>
+            <CourseTable 
+              courses={courses} 
+              deleteCourse={deleteCourse} 
+            />
+
+            {/* Learning Paths Table */}
+            <h2>Learning Paths</h2>
+            <LearningPathTable learningPaths={learningPaths} />
+
+            {/* Course Popup */}
+            {popupVisible && selectedEmployee && (
+              <CoursePopup
+                employee={selectedEmployee}
+                onClose={() => setPopupVisible(false)}
+                onUpdateCourses={updateCourses}
+                courses={courses}
               />
-            </Form.Group>
-            <Form.Group controlId="formEmployeeEmail">
-              <Form.Label>Email</Form.Label>
-              <Form.Control 
-                type="email" 
-                placeholder="Enter email" 
-                value={newEmployee.email} 
-                onChange={(e) => setNewEmployee({ ...newEmployee, email: e.target.value })} 
-              />
-            </Form.Group>
-            <Form.Group controlId="formEmployeePassword">
-              <Form.Label>Password</Form.Label>
-              <Form.Control 
-                type="password" 
-                placeholder="Password" 
-                value={newEmployee.password} 
-                onChange={(e) => setNewEmployee({ ...newEmployee, password: e.target.value })} 
-              />
-            </Form.Group>
-            <Form.Group controlId="formEmployeeRole">
-              <Form.Label>Role</Form.Label>
-              <Form.Control 
-                as="select" 
-                value={newEmployee.role} 
-                onChange={(e) => setNewEmployee({ ...newEmployee, role: e.target.value })} 
-              >
-                <option value="">Select role</option>
-                <option value="Employee">Employee</option>
-                <option value="Admin">Admin</option>
-              </Form.Control>
-            </Form.Group>
-            <Button variant="primary" onClick={handleAddEmployee}>Add Employee</Button>
-          </Form>
-        </Modal.Body>
-      </Modal>
+            )}
 
-      {/* New Course Modal */}
-      <Modal show={showAddCourseModal} onHide={() => setShowAddCourseModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Add New Course</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {error && <Alert variant="danger">{error}</Alert>}
-          <Form>
-            <Form.Group controlId="formCourseTitle">
-              <Form.Label>Title</Form.Label>
-              <Form.Control 
-                type="text" 
-                placeholder="Enter course title" 
-                value={newCourse.title} 
-                onChange={(e) => setNewCourse({ ...newCourse, title: e.target.value })} 
-              />
-            </Form.Group>
-            <Form.Group controlId="formCourseDescription">
-              <Form.Label>Description</Form.Label>
-              <Form.Control 
-                as="textarea" 
-                rows={3} 
-                placeholder="Enter course description" 
-                value={newCourse.description} 
-                onChange={(e) => setNewCourse({ ...newCourse, description: e.target.value })} 
-              />
-            </Form.Group>
-            <Form.Group controlId="formCourseDuration">
-              <Form.Label>Duration</Form.Label>
-              <Form.Control 
-                type="text" 
-                placeholder="Enter duration" 
-                value={newCourse.duration} 
-                onChange={(e) => setNewCourse({ ...newCourse, duration: e.target.value })} 
-              />
-            </Form.Group>
-            <Form.Group controlId="formCourseDifficulty">
-              <Form.Label>Difficulty</Form.Label>
-              <Form.Control 
-                as="select" 
-                value={newCourse.difficulty} 
-                onChange={(e) => setNewCourse({ ...newCourse, difficulty: e.target.value })} 
-              >
-                <option value="">Select difficulty</option>
-                <option value="Beginner">Beginner</option>
-                <option value="Intermediate">Intermediate</option>
-                <option value="Advanced">Advanced</option>
-              </Form.Control>
-            </Form.Group>
-            <Button variant="primary" onClick={handleAddCourse}>Add Course</Button>
-          </Form>
-        </Modal.Body>
-      </Modal>
-
-      {/* Employees Table */}
-      <h2>Employees</h2>
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {employees.map(employee => (
-            <tr key={employee.id}>
-              <td>{employee.id}</td>
-              <td>{employee.name}</td>
-              <td>{employee.email}</td>
-              <td>{employee.role}</td>
-              <td>
-                <Button variant="info" onClick={() => handleViewCourses(employee)}>View Courses</Button>
-                <Button variant="danger" onClick={() => deleteUser(employee.id)}>Delete</Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-
-      {/* Courses Table */}
-      <h2>Courses</h2>
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Duration (Hrs)</th>
-            <th>Difficulty</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {courses.map(course => (
-            <tr key={course.id}>
-              <td>{course.id}</td>
-              <td>{course.title}</td>
-              <td>{course.description}</td>
-              <td>{course.duration}</td>
-              <td>{course.difficulty}</td>
-              <td>
-                <Button variant="danger" onClick={() => deleteCourse(course.id)}>Delete</Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-
-      {/* Learning Paths Table */}
-      <h2>Learning Paths</h2>
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Courses</th>
-          </tr>
-        </thead>
-        <tbody>
-          {learningPaths.map(path => (
-            <tr key={path.id}>
-              <td>{path.id}</td>
-              <td>{path.title}</td>
-              <td>{path.description}</td>
-              <td>
-                {path.courses && path.courses.map(course => (
-                  <div key={course.id}>{course.title}</div>
-                ))}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-
-      {/* Course Popup */}
-      {popupVisible && selectedEmployee && (
-        <CoursePopup
-          employee={selectedEmployee}
-          onClose={() => setPopupVisible(false)}
-          onUpdateCourses={updateCourses}
-          courses={courses}
-        />
-      )}
-
-      {/* Learning Path Modal */}
-      <LearningPath 
-        show={showLearningPathModal} 
-        handleClose={handleCloseLearningPathModal} 
-        selectedLearningPath={selectedLearningPath}
-        onSave={(newPath) => {
-          setLearningPaths([...learningPaths, newPath]);
-        }}
-      />
+            {/* Learning Path Modal */}
+            <LearningPath 
+              show={showLearningPathModal} 
+              handleClose={handleCloseLearningPathModal} 
+              selectedLearningPath={selectedLearningPath}
+              onSave={(newPath) => {
+                setLearningPaths([...learningPaths, newPath]);
+              }}
+            />
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 }
