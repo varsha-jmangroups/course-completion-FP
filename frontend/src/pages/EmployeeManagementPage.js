@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Navbar,Nav } from 'react-bootstrap';
+import { Container, Row, Col, Nav, Navbar, Button } from 'react-bootstrap';
+import CoursePopup from './CoursePopup';
 import axios from 'axios';
 import '../styles/AdminDashboard.css';
 import { useNavigate } from 'react-router-dom'; 
-import Sidebar from '../components/Sidebar'; 
+import LearningPath from './LearningPath';
+import Sidebar from '../components/Sidebar'; // Sidebar Component
 import AddNewEmployeeModal from '../components/AddNewEmployeeModal';
 import NewCourseModal from '../components/NewCourseModal';
 import EmployeeTable from '../components/EmployeeTable';
@@ -11,12 +13,8 @@ import CourseTable from '../components/CourseTable';
 import LearningPathTable from '../components/LearningPathTable';
 import EmployeeCourseGraph from '../components/EmployeeCourseGraph';
 import NavigationBar from '../components/NavigationBar';
-import { Button } from 'primereact/button';
-import { Toast } from 'primereact/toast';
 
-
-
-function EmployeeManagementPage() {
+function AdminDashboard() {
   const navigate = useNavigate();
   const [employees, setEmployees] = useState([]);
   const [courses, setCourses] = useState([]);
@@ -30,16 +28,6 @@ function EmployeeManagementPage() {
   const [showAddEmployeeModal, setShowAddEmployeeModal] = useState(false);
   const [showAddCourseModal, setShowAddCourseModal] = useState(false);
   const [selectedLearningPath, setSelectedLearningPath] = useState(null);
-  const toastRef = React.createRef();
-
-    const handleOpenAddEmployeeModal = () => {
-        resetNewEmployee();
-        setShowAddEmployeeModal(true);
-    };
-
-    const handleSignOut = () => {
-        navigate('/');
-    };
 
   useEffect(() => {
     const fetchUsersCoursesAndPaths = async () => {
@@ -54,62 +42,68 @@ function EmployeeManagementPage() {
         setLearningPaths(pathsResponse.data);
       } catch (error) {
         console.error('Error fetching data:', error);
-        showToast('Error fetching data', 'error');
       }
     };
 
     fetchUsersCoursesAndPaths();
   }, []);
 
-  const showToast = (message, severity) => {
-    toastRef.current.show({ severity, summary: 'Notification', detail: message, life: 3000 });
+  const handleLearningPathClick = (learningPath) => {
+    setSelectedLearningPath(learningPath);
+    setShowLearningPathModal(true);
+  };
+
+  const handleCloseLearningPathModal = () => {
+    setShowLearningPathModal(false);
+    setSelectedLearningPath(null);
   };
 
   const deleteUser = async (id) => {
     if (window.confirm('Are you sure you want to delete this employee?')) {
       try {
-        await axios.delete("http://localhost:3000/users/${id}");
+        await axios.delete(`http://localhost:3000/users/${id}`);
         setEmployees(employees.filter(employee => employee.id !== id));
-        showToast('Employee deleted successfully', 'success');
       } catch (error) {
         console.error('Error deleting user:', error);
-        showToast('Error deleting user', 'error');
       }
     }
   };
-  const handleAddCourse = async () => {
-    if (!newCourse.title || !newCourse.description || !newCourse.duration || !newCourse.difficulty) {
-      setError('All fields are required');
-      return;
-    }
-  
-    try {
-      const response = await axios.post('http://localhost:3000/courses', newCourse);
-      setCourses([...courses, response.data]);
-      resetNewCourse();
-      setError('');
-      setShowAddCourseModal(false);
-      showToast('Course added successfully', 'success');
-    } catch (error) {
-      console.error('Error adding course:', error);
-      setError('Failed to add course');
-      showToast('Failed to add course', 'error');
-    }
-  };
-  const resetNewCourse = () => {
-    setNewCourse({ title: '', description: '', duration: '', difficulty: '' });
-  };
-    
 
   const deleteCourse = async (id) => {
     if (window.confirm('Are you sure you want to delete this course?')) {
       try {
-        await axios.delete("http://localhost:3000/courses/${id}");
+        await axios.delete(`http://localhost:3000/courses/${id}`);
         setCourses(courses.filter(course => course.id !== id));
-        showToast('Course deleted successfully', 'success');
       } catch (error) {
         console.error('Error deleting course:', error);
-        showToast('Error deleting course', 'error');
+      }
+    }
+  };
+
+  const deleteLearningPath = async (id) => {
+    if (window.confirm('Are you sure you want to delete this learning path?')) {
+      try {
+        await axios.delete(`http://localhost:3000/learning-paths/${id}`);
+        setLearningPaths(learningPaths.filter(path => path.id !== id));
+      } catch (error) {
+        console.error('Error deleting learning path:', error);
+      }
+    }
+  };
+
+  const handleViewCourses = (employee) => {
+    setSelectedEmployee(employee);
+    setPopupVisible(true);
+  };
+
+  const handleAddCourseToLearningPath = async (courseId) => {
+    if (selectedLearningPath) {
+      try {
+        await axios.post(`http://localhost:3000/learning-paths/${selectedLearningPath.id}/courses`, { courseId });
+        const response = await axios.get('http://localhost:3000/learning-paths');
+        setLearningPaths(response.data);
+      } catch (error) {
+        console.error('Error adding course to learning path:', error);
       }
     }
   };
@@ -126,11 +120,20 @@ function EmployeeManagementPage() {
       resetNewEmployee();
       setError('');
       setShowAddEmployeeModal(false);
-      showToast('Employee added successfully', 'success');
     } catch (error) {
       console.error('Error adding employee:', error);
       setError('Failed to add employee');
-      showToast('Failed to add employee', 'error');
+    }
+  };
+
+  const updateCourses = async () => {
+    if (selectedEmployee) {
+      try {
+        const response = await axios.get(`http://localhost:3000/users/${selectedEmployee.id}/courses`);
+        setCourses(response.data);
+      } catch (error) {
+        console.error('Error updating courses:', error);
+      }
     }
   };
 
@@ -138,10 +141,40 @@ function EmployeeManagementPage() {
     setNewEmployee({ name: '', email: '', password: '', role: '' });
   };
 
+  const handleAddCourse = async () => {
+    if (!newCourse.title || !newCourse.description || !newCourse.duration || !newCourse.difficulty) {
+      setError('All fields are required');
+      return;
+    }
+
+    try {
+      const response = await axios.post('http://localhost:3000/courses', newCourse);
+      setCourses([...courses, response.data]);
+      resetNewCourse();
+      setError('');
+      setShowAddCourseModal(false);
+    } catch (error) {
+      console.error('Error adding course:', error);
+      setError('Failed to add course');
+    }
+  };
+
+  const resetNewCourse = () => {
+    setNewCourse({ title: '', description: '', duration: '', difficulty: '' });
+  };
+
+  const handleOpenAddEmployeeModal = () => {
+    resetNewEmployee();
+    setShowAddEmployeeModal(true);
+};
+
+const handleSignOut = () => {
+    navigate('/');
+};
+
   return (
     <div className="admin-dashboard">
-      <Toast ref={toastRef} />
-      <Navbar bg="dark" variant="dark" expand="lg" fixed="top" className="mb-4"> {/* Add fixed="top" here */}
+<Navbar bg="dark" variant="dark" expand="lg" fixed="top" className="mb-4"> {/* Add fixed="top" here */}
             <Navbar.Brand href="#home">Company Name</Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
@@ -152,44 +185,95 @@ function EmployeeManagementPage() {
                     <Button variant="outline-light" className="mx-2" onClick={handleOpenAddEmployeeModal}>
                         Add New Employee
                     </Button>
-                    
+                    {/* <Button variant="outline-light" className="mx-2" onClick={() => {
+                        resetNewCourse();
+                        setShowAddCourseModal(true);
+                    }}>
+                        Add New Course
+                    </Button>
+                    <Button variant="outline-light" className="mx-2" onClick={() => {
+                        setShowLearningPathModal(true);
+                    }}>
+                        Learning Path
+                    </Button> */}
                     <Button variant="outline-danger" onClick={handleSignOut}>Sign Out</Button>
                 </Nav>
             </Navbar.Collapse>
-        </Navbar>
-      <Container fluid>
+        </Navbar>      
+        <Container fluid>
         <Row>
           <Col xs={2}>
-            <Sidebar />
-          </Col>
-          <Col xs={10} className="main-content">
-            
-            <h2>Employees</h2>
-            <EmployeeTable 
-              employees={employees} 
-              deleteUser={deleteUser} 
+            {/* Sidebar Component */}
+            <Sidebar 
+              resetNewCourse={resetNewCourse} 
+              setShowAddCourseModal={setShowAddCourseModal}
+              resetNewEmployee={resetNewEmployee}
+              setShowAddEmployeeModal={setShowAddEmployeeModal}
+              setShowLearningPathModal={setShowLearningPathModal}
             />
+          </Col>
+          <Col xs={10}>
+            {/* Employee and Course Graph */}
+            {/* <EmployeeCourseGraph employees={employees} courses={courses} /> */}
 
-            
-            
-
-            {/* Modals for adding new employee and course */}
+            {/* New Employee Modal */}
             <AddNewEmployeeModal 
-              show={showAddEmployeeModal} 
-              setShow={setShowAddEmployeeModal} 
+              showAddCourseModal={showAddCourseModal} 
+              setShowAddEmployeeModal={setShowAddEmployeeModal} 
+              showAddEmployeeModal={showAddEmployeeModal} 
+              error={error} 
               newEmployee={newEmployee} 
               setNewEmployee={setNewEmployee} 
               handleAddEmployee={handleAddEmployee} 
-              error={error} 
             />
 
+            {/* New Course Modal */}
             <NewCourseModal 
-              show={showAddCourseModal}
-              setShow={setShowAddCourseModal} 
-              newCourse={newCourse} 
-              setNewCourse={setNewCourse} 
-              handleAddCourse={handleAddCourse} 
+              showAddCourseModal={showAddCourseModal}
+              setShowAddCourseModal={setShowAddCourseModal} 
               error={error} 
+              setNewCourse={setNewCourse} 
+              newCourse={newCourse} 
+              handleAddCourse={handleAddCourse} 
+            />
+
+            {/* Employees Table */}
+            <h2>Employees</h2>
+            <EmployeeTable 
+              employees={employees} 
+              handleViewCourses={handleViewCourses} 
+              deleteUser={deleteUser} 
+            />
+
+            {/* Courses Table */}
+            {/* <h2>Courses</h2>
+            <CourseTable 
+              courses={courses} 
+              deleteCourse={deleteCourse} 
+            /> */}
+{/* 
+            {/* Learning Paths Table 
+            <h2>Learning Paths</h2>
+            <LearningPathTable learningPaths={learningPaths} /> */}
+
+            {/* Course Popup */}
+            {popupVisible && selectedEmployee && (
+              <CoursePopup
+                employee={selectedEmployee}
+                onClose={() => setPopupVisible(false)}
+                onUpdateCourses={updateCourses}
+                courses={courses}
+              />
+            )}
+
+            {/* Learning Path Modal */}
+            <LearningPath 
+              show={showLearningPathModal} 
+              handleClose={handleCloseLearningPathModal} 
+              selectedLearningPath={selectedLearningPath}
+              onSave={(newPath) => {
+                setLearningPaths([...learningPaths, newPath]);
+              }}
             />
           </Col>
         </Row>
@@ -198,4 +282,4 @@ function EmployeeManagementPage() {
   );
 }
 
-export default EmployeeManagementPage;
+export default AdminDashboard;

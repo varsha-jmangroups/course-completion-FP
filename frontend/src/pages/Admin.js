@@ -205,22 +205,22 @@ function AdminDashboard() {
 
             {/* Employees Table */}
             <h2>Employees</h2>
-            <EmployeeTable 
+            {/* <EmployeeTable 
               employees={employees} 
               handleViewCourses={handleViewCourses} 
               deleteUser={deleteUser} 
-            />
+            /> */}
 
             {/* Courses Table */}
-            <h2>Courses</h2>
+            {/* <h2>Courses</h2>
             <CourseTable 
               courses={courses} 
               deleteCourse={deleteCourse} 
-            />
-
-            {/* Learning Paths Table */}
+            /> */}
+{/* 
+            {/* Learning Paths Table 
             <h2>Learning Paths</h2>
-            <LearningPathTable learningPaths={learningPaths} />
+            <LearningPathTable learningPaths={learningPaths} /> */}
 
             {/* Course Popup */}
             {popupVisible && selectedEmployee && (
