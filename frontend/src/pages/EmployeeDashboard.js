@@ -13,7 +13,8 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState({}); // To track which course is in edit mode
   const [inputCompletion, setInputCompletion] = useState({}); // For local input state
-
+  const [employees, setEmployees] = useState([]);
+  const [enrollments, setEnrollments] = useState([]);
   // Get employee ID from local storage
   const user = JSON.parse(localStorage.getItem('user'));
   const employeeId = user ? user.id : null;
@@ -66,6 +67,28 @@ function Dashboard() {
   if (loading) {
     return <div>Loading...</div>;
   }
+   // Fetch Employees
+   const fetchEmployees = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/users');
+      const data = await response.json();
+      setEmployees(data);
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    }
+  };
+
+  // Fetch Enrollments
+  const fetchEnrollments = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/enrollments');
+      const data = await response.json();
+      setEnrollments(data);
+    } catch (error) {
+      console.error("Error fetching enrollments:", error);
+    }
+  };
+  
 
   const employeeName = employeeDetails.name || 'Guest';
   const employeeRole = employeeDetails.role || 'N/A';

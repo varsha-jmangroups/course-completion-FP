@@ -19,6 +19,7 @@ import CourseCompletionRateGraph from '../components/CourseCompletionRateGraph';
 import EmployeeEnrollmentOverviewGraph from '../components/EmployeeEnrollmentOverviewGraph'; // Import your new component
 import EnrollmentStatisticsGraph from '../components/EnrollmentStatisticsGraph'; // Import your new component
 import LearningPathOverviewGraph from '../components/LearningPathOverviewGraph'; 
+import CountCard from '../components/CountCard';
 function AdminDashboard() {
   const navigate = useNavigate();
   const [employees, setEmployees] = useState([]);
@@ -192,13 +193,35 @@ useEffect(() => {
             />
           </Col>
           <Col xs={10}>
+           {/* Count Cards Row */}
+           <Row className="mb-4" style={{ justifyContent: 'space-around' }}>
+              <Col xs={12} md={4}>
+                <CountCard title="Number of Employees" count={employees.length} color="#4CAF50" />
+              </Col>
+              <Col xs={12} md={4}>
+                <CountCard title="Number of Courses" count={courses.length} color="#2196F3" />
+              </Col>
+              <Col xs={12} md={4}>
+                <CountCard title="Number of Learning Paths" count={learningPaths.length} color="#FF9800" />
+              </Col>
+            </Row>
           
-            <EmployeeCourseGraph employees={employees} courses={courses} />
-            <EmployeePerformanceMetricsGraph employees={employees} enrollments={enrollments} />
-            <CourseCompletionRateGraph courses={courses} enrollments={enrollments} /> {/* Add Course Completion Rate Graph */}
-            <EmployeeEnrollmentOverviewGraph employees={employees} enrollments={enrollments} /> {/* Add Employee Enrollment Overview Graph */}
-            <EnrollmentStatisticsGraph courses={courses} enrollments={enrollments} /> {/* Add Enrollment Statistics Graph */}
-            <LearningPathOverviewGraph learningPaths={learningPaths} /> {/* Add Learning Path Overview Graph */}
+          <Row className="mb-4" style={{ justifyContent: 'space-around' }}>
+  
+  <Col xs={12} md={6} lg={6}>
+    <EmployeePerformanceMetricsGraph employees={employees} enrollments={enrollments} />
+  </Col>
+  <Col xs={12} md={6} lg={6}>
+    <CourseCompletionRateGraph courses={courses} enrollments={enrollments} />
+  </Col>
+  
+  <Col xs={12} md={6} lg={6}>
+    <EnrollmentStatisticsGraph courses={courses} enrollments={enrollments} />
+  </Col>
+  <Col xs={12} md={6} lg={6}>
+    <LearningPathOverviewGraph learningPaths={learningPaths} />
+  </Col>
+</Row>
 
             {/* New Employee Modal */}
             <AddNewEmployeeModal 

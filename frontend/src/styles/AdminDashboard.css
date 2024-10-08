@@ -2,92 +2,113 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
+    font-family: 'Arial', sans-serif; /* Use a more modern font */
 }
 
 .section-title {
-    font-size: 1.8rem;
+    font-size: 2rem; /* Increased font size for section titles */
     color: #343a40;
     margin: 20px 0;
+    text-align: center; /* Center align titles */
 }
 
+/* Toast Message Styling */
 .toast-message {
     position: absolute;
     top: 20px;
     right: 20px;
+    background-color: #f8d7da; /* Light red for warnings */
+    color: #721c24; /* Darker red for text */
+    border: 1px solid #f5c6cb; /* Border color */
+    padding: 10px;
+    border-radius: 5px;
 }
 
-/* Sidebar styles */
+/* Sidebar Styles */
 .sidebar {
-    background-color: #134277;
+    background-color: #134277; /* Deep blue background */
     padding: 20px;
     color: white;
+    height: 100%;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
-/* Main content styling */
+/* Main Content Styling */
 .main-content {
     flex-grow: 1;
     padding: 20px;
-    background-color: #f4f4f4;
+    background-color: #f4f4f4; /* Light gray background */
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle inner shadow */
+    border-radius: 8px; /* Rounded corners */
 }
 
-/* General styling for headers */
+/* General Styling for Headers */
 h2 {
     font-size: 1.5rem;
     color: #134277;
     margin-bottom: 20px;
 }
 
-/* Employee and Course Graph */
+/* Graph Styling */
 .employee-course-graph {
     margin-bottom: 20px;
+    background-color: white; /* White background for graphs */
+    padding: 15px;
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Soft shadow */
 }
 
-/* Table styling */
+/* Table Styling */
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
+    margin-top: 20px;
+    background-color: white; /* Table background */
+    border-radius: 8px; /* Rounded corners */
+    overflow: hidden; /* Hide overflow */
 }
 
 th, td {
     border: 1px solid #ddd;
-    padding: 8px;
+    padding: 12px; /* Increased padding */
     text-align: left;
 }
 
 th {
-    background-color: #007bff;
+    background-color: #007bff; /* Bootstrap blue */
     color: white;
 }
 
-/* Button styles */
+/* Button Styles */
 button {
     border: none;
     color: white;
-    padding: 8px 12px;
+    padding: 10px 15px; /* Increased padding */
     border-radius: 5px;
     cursor: pointer;
     margin-right: 8px;
+    transition: background-color 0.3s; /* Smooth transition */
 }
 
 .delete-btn {
-    background-color: #dc3545;
+    background-color: #dc3545; /* Red background */
 }
 
 .delete-btn:hover {
-    background-color: #c82333;
+    background-color: #c82333; /* Darker red */
 }
 
 .view-courses-btn {
-    background-color: #007bff;
+    background-color: #007bff; /* Blue background */
 }
 
 .view-courses-btn:hover {
-    background-color: #0056b3;
+    background-color: #0056b3; /* Darker blue */
 }
 
-/* Style adjustments for modal */
+/* Modal Title Styling */
 .modal-title {
     font-weight: bold;
     color: #343a40;
+    font-size: 1.5rem; /* Larger font size for titles */
 }

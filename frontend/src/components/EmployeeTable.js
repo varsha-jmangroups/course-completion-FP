@@ -2,7 +2,7 @@ import React from 'react';
 import { useTable, usePagination } from 'react-table';
 import { Table, Button } from 'react-bootstrap';
 
-export default function EmployeeTable({ employees, handleViewCourses, deleteUser }) {
+export default function EmployeeTable({ employees, handleViewCourses, deleteUser, courses }) {
   const columns = React.useMemo(
     () => [
       { Header: 'ID', accessor: 'id' },
@@ -13,7 +13,13 @@ export default function EmployeeTable({ employees, handleViewCourses, deleteUser
         Header: 'Actions',
         Cell: ({ row }) => (
           <div>
-            <Button variant="warning" onClick={() => handleViewCourses(row.original)} className="me-2">View Courses</Button>
+            <Button
+              variant="warning"
+              onClick={() => handleViewCourses(row.original, courses)} // Pass courses
+              className="me-2"
+            >
+              View Courses
+            </Button>
             <Button variant="danger" onClick={() => deleteUser(row.original.id)}>Delete</Button>
           </div>
         ),

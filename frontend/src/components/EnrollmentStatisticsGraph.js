@@ -19,10 +19,27 @@ const EnrollmentStatisticsGraph = ({ courses, enrollments }) => {
     }],
   };
 
+  const options = {
+    plugins: {
+      legend: {
+        labels: {
+          font: {
+            size: 12, // Smaller font for the legend
+          },
+        },
+      },
+      tooltip: {
+        bodyFont: {
+          size: 12, // Smaller font for tooltips
+        },
+      },
+    },
+  };
+
   return (
-    <div style={{ width: '600px', margin: '40px auto' }}>
-      <h2>Enrollment Statistics</h2>
-      <Pie data={data} />
+    <div style={{ width: '400px', margin: '20px auto' }}>
+      <h2 style={{ fontSize: '16px', textAlign: 'center' }}>Enrollment Statistics</h2>
+      <Pie data={data} options={options} />
     </div>
   );
 };
