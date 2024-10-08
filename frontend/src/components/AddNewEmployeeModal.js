@@ -51,7 +51,7 @@ export default function AddNewEmployeeModal({setShowAddEmployeeModal, showAddEmp
                 <option value="Admin">Admin</option>
               </Form.Control>
             </Form.Group>
-            <Button variant="primary" onClick={handleAddEmployee}>Add Employee</Button>
+            <Button variant="primary" onClick={handleAddEmployee} className="mt-3">Add Employee</Button>
           </Form>
         </Modal.Body>
       </Modal>

@@ -51,7 +51,7 @@ export default function NewCourseModal({setShowAddCourseModal, showAddCourseModa
                 <option value="Advanced">Advanced</option>
               </Form.Control>
             </Form.Group>
-            <Button variant="primary" onClick={handleAddCourse}>Add Course</Button>
+            <Button variant="primary" onClick={handleAddCourse} className="mt-3">Add Course</Button>
           </Form>
         </Modal.Body>
       </Modal>

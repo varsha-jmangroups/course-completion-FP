@@ -293,6 +293,69 @@ app.delete('/users/:id', async (req, res) => {
   }
 });
 
+
+// 1. Generate Certificate after Course Completion
+app.post('/certificate', async (req, res) => {
+  const { userId, courseId, certificateUrl } = req.body;
+
+  try {
+    const newCertificate = await prisma.certificate.create({
+      data: { userId, courseId, certificateUrl },
+    });
+    res.status(201).json({ message: 'Certificate generated', newCertificate });
+  } catch (error) {
+    console.error('Error generating certificate:', error);
+    res.status(500).json({ error: 'Failed to generate certificate' });
+  }
+});
+
+// 2. Get all Certificates for a User
+app.get('/user/:userId/certificates', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const certificates = await prisma.certificate.findMany({
+      where: { userId: parseInt(userId) },
+    });
+    res.json(certificates);
+  } catch (error) {
+    console.error('Error fetching certificates:', error);
+    res.status(500).json({ error: 'Failed to retrieve certificates' });
+  }
+});
+
+// 3. Update a Certificate
+app.patch('/certificate/:id', async (req, res) => {
+  const { id } = req.params;
+  const { certificateUrl } = req.body;
+
+  try {
+    const updatedCertificate = await prisma.certificate.update({
+      where: { id: parseInt(id) },
+      data: { certificateUrl },
+    });
+    res.json(updatedCertificate);
+  } catch (error) {
+    console.error('Error updating certificate:', error);
+    res.status(500).json({ error: 'Failed to update certificate' });
+  }
+});
+
+// 4. Delete a Certificate
+app.delete('/certificate/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedCertificate = await prisma.certificate.delete({
+      where: { id: parseInt(id) },
+    });
+    res.json({ message: 'Certificate deleted successfully', deletedCertificate });
+  } catch (error) {
+    console.error('Error deleting certificate:', error);
+    res.status(500).json({ error: 'Failed to delete certificate' });
+  }
+});
+
 // Existing endpoints...
 
 

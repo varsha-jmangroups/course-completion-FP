@@ -1,4 +1,3 @@
-//pages/EmployeeDashboard.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Dashboard.css';
@@ -8,13 +7,16 @@ function Dashboard() {
   const [employeeDetails, setEmployeeDetails] = useState({});
   const [courses, setCourses] = useState([]);
   const [courseCompletions, setCourseCompletions] = useState([]);
+  const [certificates, setCertificates] = useState([]); // New state to hold certificates
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState({}); // To track which course is in edit mode
+  const [inputCompletion, setInputCompletion] = useState({}); // For local input state
 
   // Get employee ID from local storage
   const user = JSON.parse(localStorage.getItem('user'));
   const employeeId = user ? user.id : null;
 
+  // Fetch data on component mount
   useEffect(() => {
     const fetchData = async () => {
       if (!employeeId) {
@@ -42,6 +44,23 @@ function Dashboard() {
     fetchData();
   }, [employeeId]);
 
+  // Fetch certificates for the user
+  useEffect(() => {
+    const fetchCertificates = async () => {
+      if (!employeeId) return;
+
+      try {
+        const certificatesResponse = await fetch(`http://localhost:3000/user/${employeeId}/certificates`);
+        const certificateData = await certificatesResponse.json();
+        setCertificates(certificateData);
+      } catch (error) {
+        console.error('Error fetching certificates:', error);
+      }
+    };
+
+    fetchCertificates();
+  }, [employeeId]);
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -66,12 +85,34 @@ function Dashboard() {
       });
 
       if (response.ok) {
-        const updatedCompletion = await response.json();
         setCourseCompletions((prev) =>
           prev.map((comp) =>
             comp.courseId === courseId ? { ...comp, completionPercentage } : comp
           )
         );
+
+        // Generate Certificate if completed
+        if (completionPercentage === 100) {
+          const certificateResponse = await fetch('http://localhost:3000/certificate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userId: employeeId,
+              courseId,
+              certificateUrl: `http://your-certificates-url/${courseId}.pdf`, // Replace with your logic for certificate URL
+            }),
+          });
+
+          if (certificateResponse.ok) {
+            const newCertificate = await certificateResponse.json();
+            setCertificates((prevCertificates) => [...prevCertificates, newCertificate.newCertificate]); // Add new certificate to state
+            console.log('Certificate generated successfully');
+          } else {
+            console.error('Failed to generate certificate');
+          }
+        }
       } else {
         console.error('Failed to update completion percentage');
       }
@@ -88,13 +129,28 @@ function Dashboard() {
     }));
   };
 
+  // Handle input change for local completion state
+  const handleInputChange = (courseId, value) => {
+    setInputCompletion((prev) => ({
+      ...prev,
+      [courseId]: value,
+    }));
+  };
+
+  // Save updated completion percentage
+  const handleSaveCompletion = (courseId) => {
+    const completionPercentage = inputCompletion[courseId];
+    handleUpdateCompletion(courseId, completionPercentage);
+    toggleEditMode(courseId); // Exit edit mode after saving
+  };
+
   return (
     <div className="dashboard-container">
       <header className="header">
         <div className="logo">CourseConnect</div>
         <div className="employee-info">
           <span>{employeeName} - {employeeRole}</span>
-          <button className="btn sign-in-btn" onClick={() => { localStorage.removeItem('user'); navigate('/'); }}>Log Out</button>
+          <button className="btn sign-in-bt" onClick={() => { localStorage.removeItem('user'); navigate('/'); }}>Log Out</button>
         </div>
       </header>
 
@@ -119,30 +175,34 @@ function Dashboard() {
                     {completion.completionPercentage === 100 && <p className="certificate">Certificate Earned!</p>}
 
                     {/* Update Completion Percentage Section */}
-                    {editMode[course.id] ? (
-                      <>
-                        <input
-                          type="number"
-                          min="0"
-                          max="100"
-                          value={completion.completionPercentage}
-                          onChange={(e) => handleUpdateCompletion(course.id, parseInt(e.target.value))}
-                          placeholder="Update Completion (%)"
-                        />
+                    {completion.completionPercentage < 100 ? (
+                      editMode[course.id] ? (
+                        <>
+                          <input
+                            type="number"
+                            min="0"
+                            max="100"
+                            value={inputCompletion[course.id] || completion.completionPercentage}
+                            onChange={(e) => handleInputChange(course.id, parseInt(e.target.value))}
+                            placeholder="Update Completion (%)"
+                          />
+                          <button
+                            className="save-btn"
+                            onClick={() => handleSaveCompletion(course.id)} // Save button to exit edit mode
+                          >
+                            Save
+                          </button>
+                        </>
+                      ) : (
                         <button
-                          className="save-btn"
-                          onClick={() => toggleEditMode(course.id)} // Save button to exit edit mode
+                          className="edit-btn"
+                          onClick={() => toggleEditMode(course.id)} // Edit button to enter edit mode
                         >
-                          Save
+                          Edit
                         </button>
-                      </>
+                      )
                     ) : (
-                      <button
-                        className="edit-btn"
-                        onClick={() => toggleEditMode(course.id)} // Edit button to enter edit mode
-                      >
-                        Edit
-                      </button>
+                      <p>Course Completed!</p> // Prevent editing once the course is 100% complete
                     )}
                   </div>
                 </div>
@@ -150,9 +210,22 @@ function Dashboard() {
             })}
           </div>
         </section>
+
+        {/* Certificates Section */}
         <div className="certificates-section">
           <h2>Your Certificates</h2>
-          <p>No certificates earned yet.</p>
+          {certificates.length > 0 ? (
+            certificates.map((certificate) => (
+              <div key={certificate.id} className="certificate-card">
+                <p>Course ID: {certificate.courseId}</p>
+                <a href={certificate.certificateUrl} target="_blank" rel="noopener noreferrer">
+                  View Certificate
+                </a>
+              </div>
+            ))
+          ) : (
+            <p>No certificates earned yet.</p>
+          )}
         </div>
       </main>
     </div>

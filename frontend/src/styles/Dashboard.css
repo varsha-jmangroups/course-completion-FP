@@ -20,7 +20,7 @@ body {
 
 /* Header styling */
 .header {
-    background-color: #134277; /* Header color */
+    background-color: #106bd3; /* Header color */
     color: white; /* Text color */
     display: flex;
     justify-content: space-between; /* Space between logo and button */
