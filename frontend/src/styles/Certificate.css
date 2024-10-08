@@ -11,7 +11,7 @@
   max-width: 800px;
   padding: 40px;
   text-align: center;
-  border: 10px solid #4CAF50;
+  border: 10px solid #007bff;
   background-color: #fff;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
@@ -45,4 +45,5 @@
 .signature {
   font-size: 1rem;
   font-style: italic;
+  
 }

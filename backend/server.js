@@ -356,24 +356,35 @@ app.delete('/certificate/:id', async (req, res) => {
   }
 });
 // Route to fetch a certificate by ID
+// 5. Get Certificate Details
 app.get('/certificate/:id', async (req, res) => {
   const { id } = req.params;
 
   try {
     const certificate = await prisma.certificate.findUnique({
-      where: { id: parseInt(id) }, // Ensure you parse the ID as an integer
+      where: { id: parseInt(id) },
+      include: {
+        user: { select: { name: true } }, // Include user name
+        course: { select: { title: true } }, // Include course title
+      },
     });
 
     if (!certificate) {
-      return res.status(404).json({ error: 'Certificate not found' });
+      return res.status(404).json({ message: 'Certificate not found' });
     }
 
-    res.json(certificate);
+    res.json({
+      id: certificate.id,
+      employeeName: certificate.user.name,
+      courseTitle: certificate.course.title,
+      certificateUrl: certificate.certificateUrl,
+    });
   } catch (error) {
     console.error('Error fetching certificate:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: 'Failed to retrieve certificate' });
   }
 });
+
 
 // Existing endpoints...
 

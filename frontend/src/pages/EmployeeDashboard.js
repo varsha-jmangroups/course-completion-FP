@@ -149,7 +149,7 @@ function Dashboard() {
   return (
     <div className="dashboard-container">
       <header className="header">
-        <div className="logo">CourseConnect</div>
+        <div className="logo">TrainingTracker</div>
         <div className="employee-info">
           <span>{employeeName} - {employeeRole}</span>
           <button className="btn sign-in-bt" onClick={() => { localStorage.removeItem('user'); navigate('/'); }}>Log Out</button>
@@ -213,7 +213,7 @@ function Dashboard() {
           </div>
         </section>
 
-        // Replace the certificates section with this:
+ 
 <div className="certificates-section">
   <h2>Your Certificates</h2>
   {certificates.length > 0 ? (
@@ -230,7 +230,7 @@ function Dashboard() {
   field="certificateUrl"
   header="Certificate"
   body={(rowData) => (
-    <a href={`/certificate/${rowData.id}`} target="_blank" rel="noopener noreferrer">
+    <a href={`/certificate/${rowData.id}`} target="_blank" rel="noopener noreferrer" className="certificate-button">
       View Certificate
     </a>
   )}

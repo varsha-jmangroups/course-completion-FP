@@ -1,4 +1,3 @@
-//pages/certificatepage.js
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -13,7 +12,7 @@ function CertificatePage() {
     const fetchCertificateData = async () => {
       try {
         const response = await fetch(`http://localhost:3000/certificate/${certificateId}`);
-        
+
         // Check if the response is OK
         if (!response.ok) {
           const errorText = await response.text(); // Capture any error text (likely HTML)
@@ -51,7 +50,7 @@ function CertificatePage() {
         <h3 className="course-title">{courseTitle}</h3>
         <p className="certificate-text">Congratulations on your achievement!</p>
         <div className="signature-section">
-          <p className="signature">Instructor's Signature</p>
+          <p className="signature">TrainingTracker</p>
         </div>
       </div>
     </div>

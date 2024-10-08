@@ -36,7 +36,7 @@ model LearningPath {
   description String
   courses     Course[] @relation("LearningPathCourses") // Corrected line, removed fields and references
 }
-npm start
+
 model Enrollment {
   id                 Int       @id @default(autoincrement())
   userId             Int

@@ -175,7 +175,7 @@ const handleSignOut = () => {
   return (
     <div className="admin-dashboard">
 <Navbar bg="primary" variant="dark" expand="lg" fixed="top" className="mb-4"> {/* Add fixed="top" here */}
-            <Navbar.Brand href="#home">TrainingTracker</Navbar.Brand>
+            <Navbar.Brand href="#home" className="px-3">TrainingTracker</Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="mx-auto">

@@ -8,9 +8,9 @@ import LearningPath from './LearningPath';
 import Sidebar from '../components/Sidebar'; // Sidebar Component
 import AddNewEmployeeModal from '../components/AddNewEmployeeModal';
 import NewCourseModal from '../components/NewCourseModal';
-import EmployeeTable from '../components/EmployeeTable';
-import CourseTable from '../components/CourseTable';
-import LearningPathTable from '../components/LearningPathTable';
+// import EmployeeTable from '../components/EmployeeTable';
+// import CourseTable from '../components/CourseTable';
+// import LearningPathTable from '../components/LearningPathTable';
 import EmployeeCourseGraph from '../components/EmployeeCourseGraph';
 import NavigationBar from '../components/NavigationBar';
 
@@ -35,86 +35,91 @@ function AdminDashboard() {
   const [selectedLearningPath, setSelectedLearningPath] = useState(null);
   const [enrollments, setEnrollments] = useState([]);
 
-  useEffect(() => {
-    const fetchUsersCoursesAndPaths = async () => {
-      try {
-        const [usersResponse, coursesResponse, pathsResponse, enrollmentsResponse] = await Promise.all([
-          axios.get('http://localhost:3000/users'),
-          axios.get('http://localhost:3000/courses'),
-          axios.get('http://localhost:3000/learning-paths'),
-          axios.get('http://localhost:3000/enrollments'),
-        ]);
-        setEmployees(usersResponse.data);
-        setCourses(coursesResponse.data);
-        setLearningPaths(pathsResponse.data);
-        setEnrollments(enrollmentsResponse.data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+  const [loading, setLoading] = useState(true);
 
-    fetchUsersCoursesAndPaths();
-  }, []);
-
-  const handleLearningPathClick = (learningPath) => {
-    setSelectedLearningPath(learningPath);
-    setShowLearningPathModal(true);
+useEffect(() => {
+  const fetchUsersCoursesAndPaths = async () => {
+    setLoading(true); // Start loading
+    try {
+      const [usersResponse, coursesResponse, pathsResponse, enrollmentsResponse] = await Promise.all([
+        axios.get('http://localhost:3000/users'),
+        axios.get('http://localhost:3000/courses'),
+        axios.get('http://localhost:3000/learning-paths'),
+        axios.get('http://localhost:3000/enrollments'),
+      ]);
+      setEmployees(usersResponse.data);
+      setCourses(coursesResponse.data);
+      setLearningPaths(pathsResponse.data);
+      setEnrollments(enrollmentsResponse.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false); // Stop loading
+    }
   };
+
+  fetchUsersCoursesAndPaths();
+}, []);
+
+  // const handleLearningPathClick = (learningPath) => {
+  //   setSelectedLearningPath(learningPath);
+  //   setShowLearningPathModal(true);
+  // };
 
   const handleCloseLearningPathModal = () => {
     setShowLearningPathModal(false);
     setSelectedLearningPath(null);
   };
 
-  const deleteUser = async (id) => {
-    if (window.confirm('Are you sure you want to delete this employee?')) {
-      try {
-        await axios.delete(`http://localhost:3000/users/${id}`);
-        setEmployees(employees.filter(employee => employee.id !== id));
-      } catch (error) {
-        console.error('Error deleting user:', error);
-      }
-    }
-  };
+  // const deleteUser = async (id) => {
+  //   if (window.confirm('Are you sure you want to delete this employee?')) {
+  //     try {
+  //       await axios.delete(`http://localhost:3000/users/${id}`);
+  //       setEmployees(employees.filter(employee => employee.id !== id));
+  //     } catch (error) {
+  //       console.error('Error deleting user:', error);
+  //     }
+  //   }
+  // };
 
-  const deleteCourse = async (id) => {
-    if (window.confirm('Are you sure you want to delete this course?')) {
-      try {
-        await axios.delete(`http://localhost:3000/courses/${id}`);
-        setCourses(courses.filter(course => course.id !== id));
-      } catch (error) {
-        console.error('Error deleting course:', error);
-      }
-    }
-  };
+  // const deleteCourse = async (id) => {
+  //   if (window.confirm('Are you sure you want to delete this course?')) {
+  //     try {
+  //       await axios.delete(`http://localhost:3000/courses/${id}`);
+  //       setCourses(courses.filter(course => course.id !== id));
+  //     } catch (error) {
+  //       console.error('Error deleting course:', error);
+  //     }
+  //   }
+  // };
 
-  const deleteLearningPath = async (id) => {
-    if (window.confirm('Are you sure you want to delete this learning path?')) {
-      try {
-        await axios.delete(`http://localhost:3000/learning-paths/${id}`);
-        setLearningPaths(learningPaths.filter(path => path.id !== id));
-      } catch (error) {
-        console.error('Error deleting learning path:', error);
-      }
-    }
-  };
+  // const deleteLearningPath = async (id) => {
+  //   if (window.confirm('Are you sure you want to delete this learning path?')) {
+  //     try {
+  //       await axios.delete(`http://localhost:3000/learning-paths/${id}`);
+  //       setLearningPaths(learningPaths.filter(path => path.id !== id));
+  //     } catch (error) {
+  //       console.error('Error deleting learning path:', error);
+  //     }
+  //   }
+  // };
 
-  const handleViewCourses = (employee) => {
-    setSelectedEmployee(employee);
-    setPopupVisible(true);
-  };
+  // const handleViewCourses = (employee) => {
+  //   setSelectedEmployee(employee);
+  //   setPopupVisible(true);
+  // };
 
-  const handleAddCourseToLearningPath = async (courseId) => {
-    if (selectedLearningPath) {
-      try {
-        await axios.post(`http://localhost:3000/learning-paths/${selectedLearningPath.id}/courses`, { courseId });
-        const response = await axios.get('http://localhost:3000/learning-paths');
-        setLearningPaths(response.data);
-      } catch (error) {
-        console.error('Error adding course to learning path:', error);
-      }
-    }
-  };
+  // const handleAddCourseToLearningPath = async (courseId) => {
+  //   if (selectedLearningPath) {
+  //     try {
+  //       await axios.post(`http://localhost:3000/learning-paths/${selectedLearningPath.id}/courses`, { courseId });
+  //       const response = await axios.get('http://localhost:3000/learning-paths');
+  //       setLearningPaths(response.data);
+  //     } catch (error) {
+  //       console.error('Error adding course to learning path:', error);
+  //     }
+  //   }
+  // };
 
   const handleAddEmployee = async () => {
     if (!newEmployee.name || !newEmployee.email || !newEmployee.password) {

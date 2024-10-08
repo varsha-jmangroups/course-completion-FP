@@ -16,7 +16,7 @@ export default function NavigationBar({resetNewCourse, setShowAddCourseModal, re
 
     return (
         <Navbar bg="primary" variant="dark" expand="lg" fixed="top" className="mb-4"> {/* Add fixed="top" here */}
-            <Navbar.Brand href="#home">Company Name</Navbar.Brand>
+            <Navbar.Brand href="#home" className="px-3">TrainingTracker</Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="mx-auto">
@@ -37,7 +37,7 @@ export default function NavigationBar({resetNewCourse, setShowAddCourseModal, re
                     }}>
                         Learning Path
                     </Button>
-                    <Button variant="outline-danger" onClick={handleSignOut}>Sign Out</Button>
+                    <Button variant="outline-danger" onClick={handleSignOut} className="mx-2">Sign Out</Button>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>

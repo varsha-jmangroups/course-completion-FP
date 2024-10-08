@@ -1,4 +1,3 @@
-/*style/Dashboard.css*/
 * {
     box-sizing: border-box;
     margin: 0;
@@ -20,18 +19,18 @@ body {
 
 /* Header styling */
 .header {
-    background-color: #106bd3; /* Header color */
+    background-color: #007bff; /* Header color */
     color: white; /* Text color */
     display: flex;
     justify-content: space-between; /* Space between logo and button */
     align-items: center;
-    padding: 20px; /* Padding */
+    padding: 10px; /* Padding */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Shadow effect */
 }
 
 /* Button styling */
 .sign-in-btn {
-    background-color: #7e1267; /* Button color */
+    background-color: #dc3545; /* Danger color */
     border: none;
     color: white;
     padding: 10px 15px;
@@ -42,7 +41,7 @@ body {
 }
 
 .sign-in-btn:hover {
-    background-color: #660e53; /* Darker button hover color */
+    background-color: #c82333; /* Darker danger color on hover */
 }
 
 /* Enrollments container styling */
@@ -56,9 +55,9 @@ body {
 .employee-section {
     margin-bottom: 30px; /* Space between sections */
 }
-.employee-info span{
-    margin-right:15px;
 
+.employee-info span {
+    margin-right: 15px;
 }
 
 /* Course list styling */
@@ -110,7 +109,7 @@ body {
 
 /* Update Completion Button Styling */
 .update-btn {
-    background-color: #7e1267; /* Button color */
+    background-color: #28a745; /* Primary color for update */
     border: none;
     color: white;
     padding: 10px 15px;
@@ -122,7 +121,7 @@ body {
 }
 
 .update-btn:hover {
-    background-color: #660e53; /* Darker button hover color */
+    background-color: #218838; /* Darker primary color on hover */
 }
 
 /* Certificates section styling */
@@ -139,6 +138,21 @@ body {
     font-weight: bold; /* Bold text for the certificate */
     margin-top: 10px; /* Space above the certificate message */
 }
+.certificate-button {
+    display: inline-block;
+    padding: 10px 15px; /* Adjust padding for button size */
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white;
+    text-align: center;
+    text-decoration: none; /* Remove underline from link */
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s; /* Smooth transition */
+  }
+  
+  .certificate-button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+  }
+
 input[type="number"] {
     width: 80px;
     padding: 8px;
@@ -150,14 +164,15 @@ input[type="number"] {
     text-align: center;
     background-color: #f9f9f9;
     transition: border-color 0.3s ease-in-out;
-  }
-  
-  input[type="number"]:focus {
+}
+
+input[type="number"]:focus {
     border-color: #0f3b6d; /* Focus effect with a darker shade */
     outline: none;
     box-shadow: 0 0 5px rgba(15, 59, 109, 0.2);
-  }
-  .save-btn {
+}
+
+.save-btn {
     padding: 8px 12px;
     background-color: #134277; /* Primary color */
     color: white;
@@ -166,25 +181,24 @@ input[type="number"] {
     cursor: pointer;
     font-size: 14px;
     transition: background-color 0.3s ease-in-out;
-  }
-  
-  .save-btn:hover {
+}
+
+.save-btn:hover {
     background-color: #0f3b6d; /* Hover color */
-  }
-  
-  /* Edit Button Styling */
-  .edit-btn {
+}
+
+/* Edit Button Styling */
+.edit-btn {
     padding: 8px 12px;
-    background-color: #7e1267; /* Different color to indicate edit mode */
+    background-color: #ffc107; /* Warning color for edit mode */
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
     transition: background-color 0.3s ease-in-out;
-  }
-  
-  .edit-btn:hover {
-    background-color: #660e53; /* Slightly darker on hover */
-  }
-  
+}
+
+.edit-btn:hover {
+    background-color: #e0a800; /* Slightly darker on hover */
+}
