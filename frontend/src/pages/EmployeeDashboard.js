@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Dashboard.css';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -211,22 +213,33 @@ function Dashboard() {
           </div>
         </section>
 
-        {/* Certificates Section */}
-        <div className="certificates-section">
-          <h2>Your Certificates</h2>
-          {certificates.length > 0 ? (
-            certificates.map((certificate) => (
-              <div key={certificate.id} className="certificate-card">
-                <p>Course ID: {certificate.courseId}</p>
-                <a href={certificate.certificateUrl} target="_blank" rel="noopener noreferrer">
-                  View Certificate
-                </a>
-              </div>
-            ))
-          ) : (
-            <p>No certificates earned yet.</p>
-          )}
-        </div>
+        // Replace the certificates section with this:
+<div className="certificates-section">
+  <h2>Your Certificates</h2>
+  {certificates.length > 0 ? (
+    <DataTable value={certificates} responsiveLayout="scroll" stripedRows>
+      <Column
+        field="courseId"
+        header="Course Name"
+        body={(rowData) => {
+          const course = courses.find((c) => c.id === rowData.courseId);
+          return course ? course.title : "Unknown Course";
+        }}
+      />
+      <Column
+  field="certificateUrl"
+  header="Certificate"
+  body={(rowData) => (
+    <a href={`/certificate/${rowData.id}`} target="_blank" rel="noopener noreferrer">
+      View Certificate
+    </a>
+  )}
+/>
+    </DataTable>
+  ) : (
+    <p>No certificates earned yet.</p>
+  )}
+</div>
       </main>
     </div>
   );

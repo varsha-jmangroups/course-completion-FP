@@ -10,6 +10,7 @@ import LearningPathManagement from './pages/LearningPathManagement';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import EmployeeManagementPage from './pages/EmployeeManagementPage';
 import CourseManagementPage from "./pages/CourseManagementPage";
+import CertificatePage from './pages/CertificatePage'
  // For admin interface (later).
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
           <Route path="/employees" element={<EmployeeManagementPage />} />
         <Route path="/courses" element={<CourseManagementPage />} />
         <Route path="/learning-paths" element={<LearningPathManagement />} />
+        <Route path="/certificate/:certificateId" element={<CertificatePage />} />
         </Routes>
       </div>
     </Router>

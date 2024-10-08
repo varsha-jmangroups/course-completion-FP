@@ -355,6 +355,25 @@ app.delete('/certificate/:id', async (req, res) => {
     res.status(500).json({ error: 'Failed to delete certificate' });
   }
 });
+// Route to fetch a certificate by ID
+app.get('/certificate/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const certificate = await prisma.certificate.findUnique({
+      where: { id: parseInt(id) }, // Ensure you parse the ID as an integer
+    });
+
+    if (!certificate) {
+      return res.status(404).json({ error: 'Certificate not found' });
+    }
+
+    res.json(certificate);
+  } catch (error) {
+    console.error('Error fetching certificate:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 // Existing endpoints...
 
