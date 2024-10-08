@@ -120,6 +120,31 @@ app.post('/enroll', async (req, res) => {
     res.status(500).json({ error: 'Failed to enroll in course' });
   }
 });
+// Get all enrollments for a specific user
+app.get('/enrollments/:userId', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const enrollments = await prisma.enrollment.findMany({
+      where: { userId: parseInt(userId) },
+      include: { course: true }, // Include course details
+    });
+    res.json(enrollments);
+  } catch (error) {
+    console.error('Error retrieving enrollments:', error);
+    res.status(500).json({ error: 'Failed to retrieve enrollments' });
+  }
+})
+// Endpoint to get enrollments from the database
+app.get('/enrollments', async (req, res) => {
+  try {
+    const enrollments = await prisma.enrollment.findMany(); // Replace with your actual model
+    res.json(enrollments);
+  } catch (error) {
+    console.error('Error fetching enrollments:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 // 10. Delete a Course (Admin Only)
 app.delete('/courses/:id', async (req, res) => {

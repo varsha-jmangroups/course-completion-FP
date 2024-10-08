@@ -1,15 +1,13 @@
-// src/components/EmployeeEnrollmentOverviewGraph.js
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const EmployeeEnrollmentOverviewGraph = ({ employees, enrollments }) => {
-    
-  const employeeNames = employees.map(employee => employee.name);
+const EmployeeEnrollmentOverviewGraph = ({ employees = [], enrollments = [] }) => {
+  const employeeNames = employees.map(employee => employee.name || 'Unknown');
   const enrollmentCounts = employeeNames.map(name => 
-    enrollments.filter(enrollment => enrollment.user.name === name).length
+    enrollments.filter(enrollment => enrollment.user?.name === name).length
   );
 
   const data = {

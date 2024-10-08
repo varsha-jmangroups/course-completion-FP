@@ -1,16 +1,17 @@
-// src/components/EmployeePerformanceMetricsGraph.js
 import React from 'react';
 import { Radar } from 'react-chartjs-2';
 import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const EmployeePerformanceMetricsGraph = ({ employees, enrollments }) => {
-  const employeeNames = employees.map(employee => employee.name);
+const EmployeePerformanceMetricsGraph = ({ employees = [], enrollments = [] }) => {
+  const employeeNames = employees.map(employee => employee.name || 'Unknown');
   const completionPercentages = employeeNames.map(name => {
-    const employeeEnrollments = enrollments.filter(enrollment => enrollment.user.name === name);
-    const totalCompletion = employeeEnrollments.reduce((acc, enrollment) => acc + enrollment.completionPercentage, 0);
-    return totalCompletion / employeeEnrollments.length || 0; // avoid division by zero
+    const employeeEnrollments = enrollments.filter(enrollment => enrollment.user?.name === name);
+    
+    // Avoid division by zero by checking for employeeEnrollments length
+    const totalCompletion = employeeEnrollments.reduce((acc, enrollment) => acc + enrollment.completionPercentage || 0, 0);
+    return employeeEnrollments.length > 0 ? totalCompletion / employeeEnrollments.length : 0;
   });
 
   const data = {
