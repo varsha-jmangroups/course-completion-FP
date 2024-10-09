@@ -135,6 +135,7 @@ app.get('/enrollments/:userId', async (req, res) => {
     res.status(500).json({ error: 'Failed to retrieve enrollments' });
   }
 })
+
 // Endpoint to get enrollments from the database
 app.get('/enrollments', async (req, res) => {
   try {
@@ -295,13 +296,40 @@ app.patch('/enrollment/:courseId', async (req, res) => {
 app.get('/users', async (req, res) => {
   try {
     const users = await prisma.user.findMany({
-      where: { role: { not: 'Admin' } } // Fetch all except admin
+      where: { role: { not: 'Admin' } }, // Fetch all except admin
+      include: {
+        enrollments: {
+          include: {
+            course: true, // Include course details for each enrollment
+          },
+        },
+      },
     });
-    res.json(users);
+
+    // Transform the data to show users with their enrolled courses
+    const transformedUsers = users.map(user => ({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      courses: user.enrollments.map(enrollment => ({
+        id: enrollment.course.id,
+        title: enrollment.course.title,
+        description: enrollment.course.description,
+        duration: enrollment.course.duration,
+        difficulty: enrollment.course.difficulty,
+        completionPercentage: enrollment.completionPercentage,
+        enrollmentDate: enrollment.enrollmentDate,
+        completionDate: enrollment.completionDate,
+      })),
+    }));
+
+    res.json(transformedUsers);
   } catch (error) {
+    console.error('Error fetching users:', error);
     res.status(500).json({ error: 'Failed to retrieve users' });
   }
 });
+
 
 // 1. Delete User (Admin Only)
 app.delete('/users/:id', async (req, res) => {

@@ -5,6 +5,7 @@ import '../styles/CoursePopup.css';
 
 function CoursePopup({ employee, courses, onClose, onUpdate }) {
   const [selectedCourse, setSelectedCourse] = useState('');
+  console.log(courses)
 
   // Check the enrolled courses being passed
   const enrolledCourses = employee.courses || [];

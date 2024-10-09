@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTable, usePagination } from 'react-table';
 import { Table, Button } from 'react-bootstrap';
 
 export default function EmployeeTable({ employees, handleViewCourses, deleteUser, courses }) {
+
   const columns = React.useMemo(
     () => [
       { Header: 'ID', accessor: 'id' },

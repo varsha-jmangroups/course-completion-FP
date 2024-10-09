@@ -39,6 +39,7 @@ function EmployeeManagementPage() {
         ]);
         setEmployees(usersResponse.data);
         setCourses(coursesResponse.data);
+        console.log("111", courses);
         setLearningPaths(pathsResponse.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -171,10 +172,9 @@ function EmployeeManagementPage() {
 const handleSignOut = () => {
     navigate('/');
 };
-
-  return (
+return (
     <div className="admin-dashboard">
-<Navbar bg="primary" variant="dark" expand="lg" fixed="top" className="mb-4"> {/* Add fixed="top" here */}
+        <Navbar bg="primary" variant="dark" expand="lg" fixed="top" className="mb-4"> {/* Add fixed="top" here */}
             <Navbar.Brand href="#home" className="px-3">TrainingTracker</Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
@@ -239,11 +239,14 @@ const handleSignOut = () => {
 
             {/* Employees Table */}
             <h2>Employees</h2>
-            <EmployeeTable 
-              employees={employees} 
-              handleViewCourses={handleViewCourses} 
-              deleteUser={deleteUser} 
-            />
+            {courses? (
+              <EmployeeTable 
+                employees={employees} 
+                handleViewCourses={handleViewCourses} 
+                deleteUser={deleteUser} 
+                courses={courses}
+              />) : (<></>)
+              } 
 
             {/* Courses Table */}
             {/* <h2>Courses</h2>
@@ -257,7 +260,7 @@ const handleSignOut = () => {
             <LearningPathTable learningPaths={learningPaths} /> */}
 
             {/* Course Popup */}
-            {popupVisible && selectedEmployee && (
+            {popupVisible && selectedEmployee && courses && (
               <CoursePopup
                 employee={selectedEmployee}
                 onClose={() => setPopupVisible(false)}
