@@ -1,0 +1,21 @@
+learning_path_id,title,description
+1,Introduction to Programming,Start your journey into software engineering by learning basic programming concepts.
+2,Full-Stack Web Development,Learn both front-end and back-end technologies to build full web applications.
+3,Mobile App Development,Build and deploy mobile applications using popular frameworks like React Native and Flutter.
+4,Software Architecture Design,Understand the principles and best practices of designing robust and scalable software systems.
+5,DevOps Engineering,Learn continuous integration
+6,Cloud Computing Foundations,Master the basics of cloud platforms like AWS and Azure for scalable application deployment.
+7,Data Structures and Algorithms,Strengthen your coding skills by learning essential data structures and algorithms.
+8,Version Control with Git,Master Git to manage source code effectively in software projects.
+9,Backend Engineering with Node.js,Develop scalable backend systems using Node.js and Express.
+10,Frontend Engineering with React,Learn React to create dynamic and responsive user interfaces.
+11,Agile Software Development,Master Agile methodologies like Scrum and Kanban for efficient software project management.
+12,Software Testing and QA,Learn how to test software effectively and ensure quality assurance across projects.
+13,Microservices Architecture,Design distributed systems using microservices architecture.
+14,Database Design and SQL,Learn how to design databases and use SQL for querying.
+15,Machine Learning for Software Engineers,Introduction to machine learning concepts and their applications in software engineering.
+16,Cloud-Native Application Development,Build and deploy cloud-native applications using containers and serverless technologies.
+17,Security for Software Engineers,Learn essential software security practices to protect your applications from vulnerabilities.
+18,Advanced JavaScript,Master JavaScript concepts and patterns to write better code for modern applications.
+19,RESTful API Design,Learn how to design and implement RESTful APIs for scalable web applications.
+20,CI/CD with Jenkins and GitLab,Automate software development pipelines using Jenkins
