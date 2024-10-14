@@ -30,19 +30,17 @@ body {
 
 /* Button styling */
 .sign-in-btn {
-    background-color: #dc3545; /* Danger color */
     border: none;
-    color: white;
     padding: 10px 15px;
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold; /* Bold text for the button */
     transition: background-color 0.3s; /* Smooth transition for hover effect */
 }
-
-.sign-in-btn:hover {
-    background-color: #c82333; /* Darker danger color on hover */
+.employee-info > button{
+    color: white;
 }
+
 
 /* Enrollments container styling */
 .enrollments-container {

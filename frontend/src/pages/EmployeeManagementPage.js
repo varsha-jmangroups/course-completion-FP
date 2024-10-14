@@ -264,7 +264,7 @@ return (
               <CoursePopup
                 employee={selectedEmployee}
                 onClose={() => setPopupVisible(false)}
-                onUpdateCourses={updateCourses}
+                updateCourse={updateCourses}
                 courses={courses}
               />
             )}

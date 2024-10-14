@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import '../styles/CoursePopup.css';
 
-function CoursePopup({ employee, courses, onClose, onUpdate }) {
+function CoursePopup({ employee, courses, onClose, updateCourse }) {
   const [selectedCourse, setSelectedCourse] = useState('');
   console.log(courses)
 
@@ -28,13 +28,13 @@ function CoursePopup({ employee, courses, onClose, onUpdate }) {
 
     // Update employee's courses
     const updatedCourses = [...enrolledCourses, courseToAssign];
-    onUpdate(employee.id, updatedCourses);
+    updateCourse(employee.id, updatedCourses);
     setSelectedCourse(''); // Reset selection
   };
 
   const handleDeleteCourse = (courseId) => {
     const updatedCourses = enrolledCourses.filter(course => course.id !== courseId);
-    onUpdate(employee.id, updatedCourses); // Update courses without the deleted one
+    updateCourse(employee.id, updatedCourses); // Update courses without the deleted one
   };
 
   return (
