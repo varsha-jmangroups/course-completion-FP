@@ -3,15 +3,13 @@ import React, { useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import '../styles/CoursePopup.css';
 
+import axios from 'axios'; // Make sure you have axios installed or use fetch instead
+
 function CoursePopup({ employee, courses, onClose, updateCourse }) {
   const [selectedCourse, setSelectedCourse] = useState('');
-  console.log(courses)
-
-  // Check the enrolled courses being passed
   const enrolledCourses = employee.courses || [];
-  console.log('Enrolled Courses:', enrolledCourses); // Debug log
 
-  const handleAssignCourse = () => {
+  const handleAssignCourse = async () => {
     if (!selectedCourse) {
       alert('Please select a course to assign.');
       return;
@@ -19,17 +17,31 @@ function CoursePopup({ employee, courses, onClose, updateCourse }) {
 
     // Find the selected course object based on the selectedCourse ID
     const courseToAssign = courses.find(course => course.id === selectedCourse);
-    
+
     // Check if the employee is already enrolled
     if (enrolledCourses.find(course => course.id === selectedCourse)) {
       alert('This course is already assigned to the employee.');
       return;
     }
 
-    // Update employee's courses
-    const updatedCourses = [...enrolledCourses, courseToAssign];
-    updateCourse(employee.id, updatedCourses);
-    setSelectedCourse(''); // Reset selection
+    try {
+      // Call the enroll API to assign the course to the employee
+      const response = await axios.post('http://localhost:3000/enroll', {
+        userId: employee.id,
+        courseId: selectedCourse,
+      });
+
+      if (response.status === 201) {
+        alert('Course assigned successfully');
+        
+        // Update employee's courses locally
+        const updatedCourses = [...enrolledCourses, courseToAssign];
+        updateCourse(employee.id, updatedCourses); // Update the parent component with new courses
+        setSelectedCourse(''); // Reset the selected course
+      }
+    } catch (error) {
+      alert('Failed to assign the course. Please try again.');
+    }
   };
 
   const handleDeleteCourse = (courseId) => {
@@ -50,11 +62,11 @@ function CoursePopup({ employee, courses, onClose, updateCourse }) {
                 <h3>{course.title}</h3>
                 <p>Duration: {course.duration} hours</p>
                 <p>Difficulty: {course.difficulty}</p>
-                <button onClick={() => handleDeleteCourse(course.id)}>Delete Course</button>
+                <button style={{backgroundColor: '#dc3545', borderRadius:'5px'}} onClick={() => handleDeleteCourse(course.id)}>Delete Course</button>
               </div>
             ))
           ) : (
-            <p>No courses assigned to this employee.</p> // Message if no courses
+            <p>No courses assigned to this employee.</p>
           )}
         </div>
 

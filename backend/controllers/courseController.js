@@ -32,7 +32,7 @@ exports.enrollCourse = async (req, res) => {
 
     try {
         const enrollment = await prisma.enrollment.create({
-            data: { userId, courseId },
+            data: { userId: Number(userId), courseId: Number(courseId) },
         });
         res.status(201).json({ message: 'Enrolled successfully', enrollment });
     } catch (error) {
